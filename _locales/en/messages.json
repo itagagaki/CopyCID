@@ -1,0 +1,4 @@
+{
+  "name": { "message": "Copy CID to clipboard" },
+  "desc": { "message": "Copy CID to clipboard from the open Google Maps if it exists" }
+}
