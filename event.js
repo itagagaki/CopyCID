@@ -8,7 +8,7 @@ chrome.runtime.onInstalled.addListener(()=>{
   });
   chrome.contextMenus.create({
     parentId: parent_menu,
-    title: 'CID',
+    title: chrome.i18n.getMessage('only_CID'),
     id: 'CopyCID_CID'
   });
   chrome.contextMenus.create({
@@ -23,15 +23,25 @@ chrome.runtime.onInstalled.addListener(()=>{
   });
 });
 
-chrome.contextMenus.onClicked.addListener(item => {
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, tabs => {
-    const url = tabs[0].url;
-    const hexcid = /:(0x[\da-fA-F]+)!/.exec(url)[1];
-    const deccid = BigInt(hexcid).toString(10);
+chrome.contextMenus.onClicked.addListener((info,tab)=>{
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: copyCID,
+    args: [info.menuItemId, tab.url]
+  });
+});
+
+function copyCID(id, url)
+{
+  let hexcid = /:(0x[\da-fA-F]+)!/.exec(url);
+  if (!hexcid || !hexcid[1]) {
+    alert(chrome.i18n.getMessage('no_CID'));
+  } else {
+    const deccid = BigInt(hexcid[1]).toString(10);
     let textarea = document.createElement('textarea');
     textarea.style.position = 'fixed';
     textarea.style.left = '-100%';
-    switch (item.menuItemId) {
+    switch (id) {
     case 'CopyCID_URL_com':
       textarea.value = 'https://www.google.com/maps?cid='+deccid;
       break;
@@ -47,5 +57,5 @@ chrome.contextMenus.onClicked.addListener(item => {
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-  });
-});
+  }
+}

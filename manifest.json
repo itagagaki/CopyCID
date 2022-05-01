@@ -1,9 +1,9 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "__MSG_name__",
   "description": "__MSG_desc__",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage_url": "https://github.com/itagagaki/CopyCID",
   "author": "Itagaki Fumihiko",
   "default_locale": "en",
@@ -12,8 +12,8 @@
     "128": "icon128.png"
   },
   "background": {
-    "scripts": ["event.js"],
-    "persistent": false
+    "service_worker": "event.js"
   },
-  "permissions": ["contextMenus", "tabs"]
+  "permissions": [ "contextMenus", "scripting", "tabs" ],
+  "host_permissions": [ "*://*/maps/*" ]
 }

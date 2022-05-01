@@ -1,4 +1,6 @@
 {
   "name": { "message": "CIDをクリップボードにコピー" },
-  "desc": { "message": "開いているGoogleマップにCIDがあればクリップボードにコピーします" }
+  "desc": { "message": "開いているGoogleマップにCIDがあればクリップボードにコピーします" },
+  "only_CID": { "message": "CIDのみ" },
+  "no_CID": { "message": "ここにはCIDはありません" }
 }
