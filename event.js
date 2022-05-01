@@ -1,25 +1,27 @@
 chrome.runtime.onInstalled.addListener(()=>{
   const parent_menu = chrome.contextMenus.create({
-    documentUrlPatterns: [
-      '*://*/maps/*'
-    ],
+    documentUrlPatterns: ['*://*/maps/*'],
     title: chrome.i18n.getMessage('name'),
-    id: 'CopyCID'
+    id: 'CopyCID',
+    contexts: ['all']
   });
   chrome.contextMenus.create({
     parentId: parent_menu,
     title: chrome.i18n.getMessage('only_CID'),
-    id: 'CopyCID_CID'
+    id: 'CopyCID_CID',
+    contexts: ['all']
   });
   chrome.contextMenus.create({
     parentId: parent_menu,
     title: 'URL (google.com)',
-    id: 'CopyCID_URL_com'
+    id: 'CopyCID_URL_com',
+    contexts: ['all']
   });
   chrome.contextMenus.create({
     parentId: parent_menu,
     title: 'URL (google.co.jp)',
-    id: 'CopyCID_URL_co_jp'
+    id: 'CopyCID_URL_co_jp',
+    contexts: ['all']
   });
 });
 
