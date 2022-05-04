@@ -9,9 +9,8 @@ This extension adds a "Copy CID to clipboard" item to the context menu when Goog
 ## How to install
 Install from the store below or download this repository and install in developer mode.
 
-[chrome web store](https://chrome.google.com/webstore/detail/hkkonbjdhiaedfaleeojibmlhdcfpfkj)
-
-[Microsoft Edge Add-on Store](https://microsoftedge.microsoft.com/addons/detail/lffebaidibcigfdngjignknlamokckmo)
+- [chrome web store](https://chrome.google.com/webstore/detail/hkkonbjdhiaedfaleeojibmlhdcfpfkj)
+- [Microsoft Edge Add-on Store](https://microsoftedge.microsoft.com/addons/detail/lffebaidibcigfdngjignknlamokckmo)
 
 ## 概要
 Googleマップに登録されている場所にはCID（Customer ID）という識別子が付与されており、Googleマップを開く際にURLパラメータとして与えることで、その場所のマップを表示させることができます。
@@ -21,6 +20,5 @@ Googleマップに登録されている場所にはCID（Customer ID）という
 ## インストール方法
 下記ストアからインストールするか、またはこのリポジトリをダウンロードしてデベロッパーモード／開発者モードでインストールしてください。
 
-[chrome ウェブストア](https://chrome.google.com/webstore/detail/hkkonbjdhiaedfaleeojibmlhdcfpfkj)
-
-[Microsoft Edge アドオンストア](https://microsoftedge.microsoft.com/addons/detail/lffebaidibcigfdngjignknlamokckmo)
+- [chrome ウェブストア](https://chrome.google.com/webstore/detail/hkkonbjdhiaedfaleeojibmlhdcfpfkj)
+- [Microsoft Edge アドオンストア](https://microsoftedge.microsoft.com/addons/detail/lffebaidibcigfdngjignknlamokckmo)
