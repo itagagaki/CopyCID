@@ -29,7 +29,7 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
 
 function copyCID(id, url)
 {
-  let hexcid = /1s(?:0x[\da-fA-F]+):(0x[\da-fA-F]+)/.exec(url);
+  let hexcid = /1s(?:0x[1-9A-Fa-f][0-9A-Fa-f]*):(0x[1-9A-Fa-f][0-9A-Fa-f]*)/.exec(url);
   if (!hexcid || !hexcid[1]) {
     alert(chrome.i18n.getMessage('no_CID'));
   } else {
