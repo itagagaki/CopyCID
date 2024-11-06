@@ -122,26 +122,24 @@
       }
     }
 
-    // Want to add a 'CID' button above the 'Plus Code' button.
-    // So first look for the BUTTON element.
-    const plusCodeButton = document.body.querySelector('button[data-item-id="oloc"]');
-    if (!plusCodeButton) {
-      return;
-    }
-    // The actual addition is as a sibling of the container of that button element.
-    // So make sure that the container and its parent exist.
-    const plusCodeContainer = plusCodeButton.parentNode;
-    const parent = plusCodeContainer?.parentNode;
-    if (!parent) {
+    // Want to add a 'CID' button above the 'Your Maps activity' button.
+    // CID button should have the same appearance and behavior as the phone number and plus code,
+    // but the class name for this may be obfuscated, so let's duplicate the dynamically appearing DOM.
+    // The reason for duplicating the DOM for addresses is that phone number or plus code may not be present.
+    const addressButton = document.body.querySelector('button[data-item-id="address"]');
+    const addressBox = addressButton?.parentNode;
+    const placeInfoDiv = addressBox?.parentNode;
+    const historyButton = placeInfoDiv?.querySelector('button[data-item-id="history"]');
+    const historyBox = historyButton?.parentNode;
+    if (!historyBox) {
       return;
     }
     // If the CID button has already been added, then do nothing.
-    if (parent.querySelector('#cidbox')) {
+    if (placeInfoDiv.querySelector('#cidbox')) {
       return;
     }
-
     // Build CID button.
-    cidButtonBox = plusCodeContainer.cloneNode(true);
+    cidButtonBox = addressBox.cloneNode(true);
     cidButtonBox.setAttribute('id', 'cidbox');
 
     const cidButton = cidButtonBox.querySelector('button:first-of-type');
@@ -203,7 +201,7 @@
     }
 
     // Add the CID button to the page.
-    parent.insertBefore(cidButtonBox, plusCodeContainer);
+    placeInfoDiv.insertBefore(cidButtonBox, historyBox);
   };
 
   /*
