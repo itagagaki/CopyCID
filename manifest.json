@@ -3,7 +3,7 @@
 
   "name": "__MSG_name__",
   "description": "__MSG_desc__",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "homepage_url": "https://github.com/itagagaki/CopyCID",
   "author": "Itagaki Fumihiko",
   "default_locale": "en",

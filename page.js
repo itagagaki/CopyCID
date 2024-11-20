@@ -44,6 +44,7 @@
   };
 
   const copyCID = () => {
+    event.stopImmediatePropagation();
     const textarea = document.createElement('textarea');
     textarea.style.position = 'fixed';
     textarea.style.left = '-100%';
@@ -56,6 +57,7 @@
   };
 
   const copyCIDasHTML = () => {
+    event.stopImmediatePropagation();
     const textarea = document.createElement('textarea');
     textarea.style.position = 'fixed';
     textarea.style.left = '-100%';
@@ -107,6 +109,7 @@
       if (hexcid && hexcid[1]) {
         cid = BigInt(hexcid[1]).toString(10);
       } else {
+        console.log('No CID');
         return;
       }
     }
@@ -122,86 +125,139 @@
       }
     }
 
-    // Want to add a 'CID' button above the 'Your Maps activity' button.
+    // Want to add a 'CID' button below the 'Address' button.
     // CID button should have the same appearance and behavior as the phone number and plus code,
     // but the class name for this may be obfuscated, so let's duplicate the dynamically appearing DOM.
     // The reason for duplicating the DOM for addresses is that phone number or plus code may not be present.
-    const addressButton = document.body.querySelector('button[data-item-id="address"]');
-    const addressBox = addressButton?.parentNode;
+
+    // Find Address icon
+    const mainElements = document.body.querySelectorAll('div[role="main"] *');
+    const addressIcon = Array.from(mainElements).filter(element => element.textContent === "");  // pin icon
+    if (!addressIcon || addressIcon.length < 1) {
+      // console.log('Address icon not found');
+      return;
+    }
+    // Find Address box and place info container
+    let addressButton = addressIcon[0].parentElement;
+    while (addressButton) {
+      if (addressButton.tagName == 'BUTTON' || addressButton.getAttribute('role') == "button") {
+        break;
+      }
+      addressButton = addressButton.parentElement;
+    }
+    const addressBox = addressButton?.parentElement;
     const placeInfoDiv = addressBox?.parentNode;
-    const historyButton = placeInfoDiv?.querySelector('button[data-item-id="history"]');
-    const historyBox = historyButton?.parentNode;
-    if (!historyBox) {
+    if (!placeInfoDiv) {
+      // if (!addressButton) {
+      //   console.log('Address button not found');
+      // } else if (!addressBox) {
+      //   console.log('Address box not found');
+      // } else {
+      //   console.log('Place info container not found');
+      // }
       return;
     }
     // If the CID button has already been added, then do nothing.
-    if (placeInfoDiv.querySelector('#cidbox')) {
+    if (placeInfoDiv?.querySelector('#cidbox')) {
+      // console.log('CID box already exists');
       return;
     }
     // Build CID button.
     cidButtonBox = addressBox.cloneNode(true);
     cidButtonBox.setAttribute('id', 'cidbox');
-
-    const cidButton = cidButtonBox.querySelector('button:first-of-type');
+    let cidButtonIcon = null;
+    let cidButtonText = null;
+    let subbuttonsContainer = null;
+    let style = "";
+    let cidButton = cidButtonBox.querySelector('button[data-item-id="address"]');
+    if (cidButton) {
+      style = "spot";
+      cidButtonIcon = cidButton.querySelector('div>div>span.google-symbols');
+      cidButtonText = cidButton.querySelector('div>div>div.fontBodyMedium');
+      subbuttonsContainer = cidButton.nextSibling?.firstChild;
+    } else {
+      style = "building";
+      cidButton = cidButtonBox.querySelector('div[role="button"]');
+      cidButtonIcon = cidButton.querySelector('div>span.google-symbols');
+      cidButtonText = cidButton.querySelector('div>span>span');
+      subbuttonsContainer = cidButton.querySelector('div:last-child>span:last-child');
+    }
     cidButton.removeAttribute('jsaction');
     cidButton.removeAttribute('jslog');
     cidButton.removeAttribute('aria-label');
     cidButton.removeAttribute('data-item-id');
+    cidButton.removeAttribute('data-section-id');
     cidButton.setAttribute('data-tooltip', chrome.i18n.getMessage('copy_CID'));
     cidButton.onclick = copyCID;
     cidButton.addEventListener('mouseenter', mouseEnter);
     cidButton.addEventListener('mouseleave', mouseLeave);
-
-    const cidButtonIcon = cidButton.querySelector('div:first-of-type > div:nth-of-type(1) > span:first-of-type');
-    cidButtonIcon.innerHTML = 'CID';
-    cidButtonIcon.setAttribute('style', 'font-family: roboto; font-size: 15px; font-weight: bold; line-height: 24px; width: 24px; text-align: center;');
-
-    const cidButtonText = cidButton.querySelector('div:first-of-type > div:nth-of-type(2) > div:first-of-type');
-    cidButtonText.innerHTML = cid;
-    cidButtonText.setAttribute('style', 'line-height: 24px;');
-
+    if (cidButtonIcon) {
+      cidButtonIcon.innerHTML = 'CID';
+      cidButtonIcon.setAttribute('style', 'font-family: roboto; font-size: 15px; font-weight: bold; line-height: 24px; width: 24px; text-align: center;');
+    }
+    if (cidButtonText) {
+      cidButtonText.innerHTML = cid;
+      cidButtonText.setAttribute('style', 'line-height: 24px;');
+    }
     // Add more sub-buttons.
-    const subbuttonsContainer = cidButton.nextSibling?.firstChild;
     if (subbuttonsContainer) {
       // For the first sub-button, assume it is a copy button and reuse it.
-      const button1Container = subbuttonsContainer.firstChild;
-      const button1 = button1Container?.firstChild;
-      if (button1) {
-        button1.setAttribute('jsaction', 'focus:pane.focusTooltip;blur:pane.blurTooltip');
-        button1.removeAttribute('jsaction');
-        button1.removeAttribute('jslog');
-        button1.removeAttribute('aria-label');
-        button1.removeAttribute('data-item-id');
-        button1.removeAttribute('data-value');
-        button1.setAttribute('data-tooltip', chrome.i18n.getMessage('copy_CID'));
-        button1.onclick = copyCID;
-        button1.addEventListener('mouseenter', mouseEnter);
-        button1.addEventListener('mouseleave', mouseLeave);
-      }
-      // Remove the second and subsequent ones.
-      let bc = button1Container;
-      while ((bc = bc.nextSibling) != null) {
-        subbuttonsContainer.removeChild(bc);
+      const button1Box = subbuttonsContainer.firstChild;
+      let button1 = null;
+      let button2 = null;
+      if (button1Box) {
+        button1 = style == "spot" ? button1Box.querySelector('button') : button1Box;
+        if (button1) {
+          button1.removeAttribute('jsaction');
+          button1.removeAttribute('jslog');
+          button1.removeAttribute('aria-label');
+          button1.removeAttribute('data-item-id');
+          button1.removeAttribute('data-section-id');
+          button1.removeAttribute('data-value');
+          button1.setAttribute('data-tooltip', chrome.i18n.getMessage('copy_CID'));
+          button1.onclick = copyCID;
+          button1.addEventListener('mouseenter', mouseEnter);
+          button1.addEventListener('mouseleave', mouseLeave);
+        }
+        // Remove the second and subsequent ones.
+        let bc = button1Box;
+        while ((bc = bc.nextSibling) != null) {
+          subbuttonsContainer.removeChild(bc);
+        }
       }
       // Add 'Copy as HTML code' button.
-      const button2Container = button1Container.cloneNode(true);
-      const button2 = button2Container?.firstChild;
-      if (button2) {
-        const button2Icon = button2.firstChild?.querySelector('span:first-of-type');
-        if (button2Icon) {
-          button2Icon.innerHTML = 'URL';
-          button2Icon.setAttribute('style', 'font-size: 10px; line-height: 18px; width: 18px; height: 18px;');
+      const button2Box = button1Box.cloneNode(true);
+      if (button2Box) {
+        let button2Icon = null;
+        if (style == "spot") {
+          button2 = button2Box.querySelector('button');
+          button2Icon = button2.firstChild;
+        } else {
+          button2 = button2Box;
+          button2Icon = button2;
         }
-        button2.setAttribute('data-tooltip', chrome.i18n.getMessage('copy_URL'));
-        button2.onclick = copyCIDasHTML;
-        button2.addEventListener('mouseenter', mouseEnter);
-        button2.addEventListener('mouseleave', mouseLeave);
+        if (button2) {
+          button2Icon = button2Icon?.querySelector('span:first-of-type');
+          if (button2Icon) {
+            button2Icon.innerHTML = 'URL';
+            button2Icon.setAttribute('style', 'font-size: 10px; line-height: 18px; width: 18px; height: 18px;');
+          }
+          button2.setAttribute('data-tooltip', chrome.i18n.getMessage('copy_URL'));
+          button2.onclick = copyCIDasHTML;
+          button2.addEventListener('mouseenter', mouseEnter);
+          button2.addEventListener('mouseleave', mouseLeave);
+        }
+        subbuttonsContainer.insertBefore(button2Box, null);
       }
-      subbuttonsContainer.insertBefore(button2Container, null);
+      // Fix Google glitch.
+      if (style == "building") {
+        subbuttonsContainer.setAttribute('style', 'direction: rtl; margin-right: 20px;');
+        button1?.setAttribute('style', 'padding: 0;');
+        button2?.setAttribute('style', 'padding: 0;');
+      }
     }
-
     // Add the CID button to the page.
-    placeInfoDiv.insertBefore(cidButtonBox, historyBox);
+    placeInfoDiv.insertBefore(cidButtonBox, addressBox.nextElementSibling);
   };
 
   /*
