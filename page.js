@@ -130,14 +130,14 @@
     // but the class name for this may be obfuscated, so let's duplicate the dynamically appearing DOM.
     // The reason for duplicating the DOM for addresses is that phone number or plus code may not be present.
 
-    // Find Address icon
+    // Find the Address icon
     const mainElements = document.body.querySelectorAll('div[role="main"] *');
     const addressIcon = Array.from(mainElements).filter(element => element.textContent === "");  // pin icon
     if (!addressIcon || addressIcon.length < 1) {
       // console.log('Address icon not found');
       return;
     }
-    // Find Address box and place info container
+    // Find the Address box and the place info container
     let addressButton = addressIcon[0].parentElement;
     while (addressButton) {
       if (addressButton.tagName == 'BUTTON' || addressButton.getAttribute('role') == "button") {
@@ -158,7 +158,7 @@
       return;
     }
     // If the CID button has already been added, then do nothing.
-    if (placeInfoDiv?.querySelector('#cidbox')) {
+    if (placeInfoDiv.querySelector('#cidbox')) {
       // console.log('CID box already exists');
       return;
     }
@@ -256,8 +256,15 @@
         button2?.setAttribute('style', 'padding: 0;');
       }
     }
+    // Determine where to insert.
+    // Insert directly under the address.
+    let insertPoint = addressBox.nextElementSibling;
+    // Go further down if that is the name of the facility.
+    while (insertPoint?.querySelector('button[data-item-id="locatedin"]')) {
+      insertPoint = insertPoint.nextElementSibling;
+    }
     // Add the CID button to the page.
-    placeInfoDiv.insertBefore(cidButtonBox, addressBox.nextElementSibling);
+    placeInfoDiv.insertBefore(cidButtonBox, insertPoint);
   };
 
   /*
